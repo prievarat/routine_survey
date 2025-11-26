@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Survey Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        /* Design Tokens from Brief */
+        --primary-300: #F9C97A; --primary-500: #F4A329; --primary-700: #B45309;
+        --secondary-300: #7EDAD6; --secondary-500: #2BB6B4; --secondary-700: #0F766E;
+        --accent-300: #F49DB8; --accent-500: #E8467B; --accent-700: #A61E4D;
+        
+        --bg: #FFF7F2; 
+        --surface: #FFFFFF; 
+        --surface-alt: #F5F7FA; 
+        --border: #E6E9EF;
+        --text: #1F2937; 
+        --text-2: #4B5563; 
+        --text-muted: #6B7280; 
+        --text-inverse: #FFFFFF;
+        
+        --success: #2F9E44; 
+        --success-50: #ECFDF3;
+        --error: #D92D20; 
+        --error-50: #FEF2F2;
+        
+        --card-shadow: 0 4px 14px rgba(17,24,39,0.08);
+        --radius-card: 16px; 
+        --radius-pill: 9999px;
+        --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+        
+        --focus-ring: 2px solid var(--secondary-500);
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", "Nunito", sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: var(--space-4);
+        flex: 1;
+    }
+
+    h1, h2, h3 {
+        font-family: "Nunito", sans-serif;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 0;
+    }
+
+    /* --- LOGIN SCREEN --- */
+    #login-view {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        text-align: center;
+    }
+
+    .login-card {
+        background: var(--surface);
+        padding: 40px;
+        border-radius: var(--radius-card);
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* --- SURVEY SCREEN --- */
+    #survey-view {
+        display: none; /* Hidden by default */
+        animation: fadeIn 0.4s ease;
+    }
+
+    .survey-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-5);
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
+
+    .badge {
+        background: var(--primary-500);
+        color: var(--text-inverse);
+        padding: 4px 12px;
+        border-radius: var(--radius-pill);
+        font-weight: 600;
+        font-size: 0.9em;
+    }
+
+    .survey-card {
+        background: var(--surface);
+        border-radius: var(--radius-card);
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    /* --- TABLE STYLES --- */
+    .survey-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .survey-table th, .survey-table td {
+        padding: 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .survey-table th {
+        background: var(--surface-alt);
+        color: var(--text-2);
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .survey-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .col-num { width: 50px; text-align: center; color: var(--primary-700); font-weight: bold; }
+    .col-q { width: 45%; }
+    .col-ans { width: 25%; text-align: center; }
+
+    /* --- INTERACTIVE ELEMENTS --- */
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: all 0.2s;
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: var(--secondary-500);
+        box-shadow: 0 0 0 3px rgba(43, 182, 180, 0.1);
+    }
+
+    .btn {
+        background: var(--primary-500);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.1s, background 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover {
+        background: var(--primary-700);
+        transform: translateY(-1px);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn.secondary {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        color: var(--text-2);
+    }
+    
+    .btn.secondary:hover {
+        border-color: var(--secondary-500);
+        color: var(--secondary-700);
+    }
+
+    /* --- TOGGLE BUTTONS (TICKS) --- */
+    .check-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        user-select: none;
+    }
+
+    .check-btn:hover { background: var(--surface-alt); }
+    
+    .check-btn[data-state="yes"] {
+        background: var(--success-50);
+        border-color: var(--success);
+        color: var(--success);
+    }
+    
+    .check-btn[data-state="no"] {
+        background: var(--error-50);
+        border-color: var(--error);
+        color: var(--error);
+    }
+
+    .partner-input {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--primary-300);
+        border-radius: 0;
+        padding: 4px;
+        font-weight: bold;
+        color: var(--text);
+        width: 100px;
+        text-align: center;
+    }
+    .partner-input:focus {
+        outline: none;
+        border-color: var(--primary-700);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- PRINT STYLES --- */
+    @media print {
+        body { background: white; -webkit-print-color-adjust: exact; }
+        .wrap { max-width: 100%; padding: 0; }
+        #login-view, .no-print { display: none !important; }
+        #survey-view { display: block !important; }
+        .survey-card { box-shadow: none; border: 2px solid #000; }
+        .survey-table th { background: #eee !important; color: black; border-bottom: 1px solid black; }
+        .survey-table td { border-bottom: 1px solid #ddd; }
+        .check-btn { border: 1px solid #000; color: black !important; -webkit-print-color-adjust: exact;}
+        /* Force background colors in print if needed, usually better to keep clean */
+        .check-btn[data-state="yes"] { background: #fff !important; } 
+        .check-btn[data-state="yes"]::after { content: "✔"; }
+        .check-btn[data-state="no"] { background: #fff !important; }
+        .check-btn[data-state="no"]::after { content: "✘"; }
+        .btn { display: none; }
+        input { border: none; border-bottom: 1px solid black; }
+    }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+    <!-- VIEW 1: LOGIN -->
+    <div id="login-view">
+        <div class="login-card">
+            <h1 style="color: var(--primary-700);">Survey Activity</h1>
+            <p style="color: var(--text-2); margin-bottom: 20px;">Enter your name to get your survey sheet.</p>
+            
+            <input type="text" id="studentNameInput" placeholder="Your Name" style="margin-bottom: 16px;">
+            <button class="btn" type="button" onclick="startActivity()" style="width: 100%;">Start Activity</button>
+            <p id="error-msg" style="color: var(--error); font-size: 0.9rem; margin-top: 10px; display: none;">Please enter your name.</p>
+        </div>
+    </div>
+
+    <!-- VIEW 2: SURVEY -->
+    <div id="survey-view">
+        <div class="survey-header">
+            <div>
+                <h1>Survey Task</h1>
+                <div style="color: var(--text-2);">Student: <strong id="displayStudentName"></strong></div>
+            </div>
+            <div style="text-align: right;">
+                <span class="badge" id="sheetNumberBadge">Sheet #1</span>
+                <div style="margin-top: 8px;">
+                    <button class="btn secondary no-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+                    <button class="btn secondary no-print" onclick="resetApp()" style="margin-left:8px;">Exit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="survey-card">
+            <table class="survey-table">
+                <thead>
+                    <tr>
+                        <th class="col-num">#</th>
+                        <th class="col-q">Question</th>
+                        <th class="col-ans">DO YOU...?<br><span style="font-weight:400; font-size: 0.8em; text-transform:none;">(Tick or Cross)</span></th>
+                        <th class="col-ans">
+                            DOES <input type="text" class="partner-input" placeholder="Name"> ...?<br>
+                            <span style="font-weight:400; font-size: 0.8em; text-transform:none;">(Ask your partner)</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Rows generated by JS -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="no-print" style="margin-top: 20px; text-align: center; color: var(--text-muted); font-size: 0.9em;">
+            Ask your partner the questions, mark their answers, then click "Print / Save PDF" to submit.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- DATA: The 14 Survey Variations ---
+    const allSurveys = [
+        ["wake up at 5:30 AM", "take a quick shower", "pack your school bag", "go to school by bus", "eat a sandwich from home", "go to afternoon training", "do your homework for 2 hours", "watch Netflix", "go on social media", "go to bed at 10:00 PM"],
+        ["wake up at 7:00 AM", "have tea and toast", "listen to music", "walk to school with your friends", "eat lunch in the school cafeteria", "go to the gym", "talk to your friends", "eat dinner with your family", "play video games", "read a book"],
+        ["wake up late (on weekends)", "go to morning training", "brush your teeth", "have 7 lessons", "study for a test", "get home from school", "study for your exams", "talk to your parents", "get your bag ready for tomorrow", "eat a big breakfast"],
+        ["eat a big breakfast", "pack your school bag", "walk to school with your friends", "have 7 lessons", "eat a sandwich from home", "talk to your friends", "do your homework for 2 hours", "play video games", "read a book", "go to bed at 10:00 PM"],
+        ["wake up at 5:30 AM", "take a quick shower", "listen to music", "go to school by bus", "study for a test", "eat lunch in the school cafeteria", "go to afternoon training", "eat dinner with your family", "watch Netflix", "go on social media"],
+        ["wake up at 7:00 AM", "have tea and toast", "brush your teeth", "walk to school with your friends", "go to the gym", "get home from school", "study for your exams", "talk to your parents", "get your bag ready for tomorrow", "listen to music"],
+        ["wake up late (on weekends)", "go to morning training", "eat a big breakfast", "pack your school bag", "have 7 lessons", "eat a sandwich from home", "do your homework for 2 hours", "play video games", "go to bed at 10:00 PM", "take a quick shower"],
+        ["wake up at 5:30 AM", "have tea and toast", "go to school by bus", "study for a test", "go to afternoon training", "talk to your friends", "eat dinner with your family", "watch Netflix", "read a book", "go on social media"],
+        ["wake up at 7:00 AM", "take a quick shower", "listen to music", "eat lunch in the school cafeteria", "go to the gym", "get home from school", "study for your exams", "talk to your parents", "get your bag ready for tomorrow", "play video games"],
+        ["wake up late (on weekends)", "go to morning training", "brush your teeth", "pack your school bag", "walk to school with your friends", "eat a sandwich from home", "do your homework for 2 hours", "watch Netflix", "go to bed at 10:00 PM", "eat a big breakfast"],
+        ["wake up at 5:30 AM", "have tea and toast", "go to school by bus", "have 7 lessons", "go to afternoon training", "talk to your friends", "eat dinner with your family", "go on social media", "read a book", "listen to music"],
+        ["wake up at 7:00 AM", "take a quick shower", "study for a test", "eat lunch in the school cafeteria", "go to the gym", "get home from school", "study for your exams", "talk to your parents", "get your bag ready for tomorrow", "play video games"],
+        ["wake up late (on weekends)", "go to morning training", "brush your teeth", "walk to school with your friends", "eat a sandwich from home", "talk to your friends", "do your homework for 2 hours", "watch Netflix", "go to bed at 10:00 PM", "pack your school bag"],
+        ["eat a big breakfast", "listen to music", "go to school by bus", "have 7 lessons", "go to afternoon training", "eat dinner with your family", "go on social media", "read a book", "wake up at 7:00 AM", "study for your exams"]
+    ];
+
+    // --- APP STATE ---
+    function startActivity() {
+        const nameInput = document.getElementById('studentNameInput');
+        const name = nameInput.value.trim();
+        const errorMsg = document.getElementById('error-msg');
+
+        if (!name) {
+            errorMsg.style.display = 'block';
+            nameInput.focus();
+            return;
+        }
+
+        // Generate a deterministic index based on name
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % allSurveys.length;
+        
+        loadSurvey(index, name);
+    }
+
+    function loadSurvey(index, studentName) {
+        // UI Updates
+        document.getElementById('login-view').style.display = 'none';
+        document.getElementById('survey-view').style.display = 'block';
+        document.getElementById('displayStudentName').textContent = studentName;
+        document.getElementById('sheetNumberBadge').textContent = `Sheet #${index + 1}`;
+
+        // Render Table
+        const items = allSurveys[index];
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = ''; // Clear previous
+
+        items.forEach((item, i) => {
+            const tr = document.createElement('tr');
+            
+            // Number Column
+            const tdNum = document.createElement('td');
+            tdNum.className = 'col-num';
+            tdNum.textContent = i + 1;
+            tr.appendChild(tdNum);
+
+            // Question Column
+            const tdQ = document.createElement('td');
+            tdQ.className = 'col-q';
+            tdQ.innerHTML = `... ${item}`;
+            tr.appendChild(tdQ);
+
+            // My Answer Column
+            const tdMe = document.createElement('td');
+            tdMe.className = 'col-ans';
+            tdMe.appendChild(createCheckBtn());
+            tr.appendChild(tdMe);
+
+            // Partner Answer Column
+            const tdPartner = document.createElement('td');
+            tdPartner.className = 'col-ans';
+            tdPartner.appendChild(createCheckBtn());
+            tr.appendChild(tdPartner);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function createCheckBtn() {
+        const btn = document.createElement('button');
+        btn.className = 'check-btn';
+        btn.type = 'button'; // Prevent form submission
+        // States: '' (empty) -> 'yes' (tick) -> 'no' (cross) -> ''
+        btn.onclick = function() {
+            const current = btn.getAttribute('data-state');
+            if (!current) {
+                btn.setAttribute('data-state', 'yes');
+                btn.textContent = '✔';
+            } else if (current === 'yes') {
+                btn.setAttribute('data-state', 'no');
+                btn.textContent = '✘';
+            } else {
+                btn.removeAttribute('data-state');
+                btn.textContent = '';
+            }
+        };
+        return btn;
+    }
+
+    function resetApp() {
+        document.getElementById('studentNameInput').value = '';
+        document.getElementById('survey-view').style.display = 'none';
+        document.getElementById('login-view').style.display = 'flex';
+        document.getElementById('error-msg').style.display = 'none';
+    }
+
+    // Explicitly expose to window for HTML event handlers
+    window.startActivity = startActivity;
+    window.resetApp = resetApp;
+
+    // Allow "Enter" key to submit name
+    const input = document.getElementById('studentNameInput');
+    if (input) {
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                startActivity();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
